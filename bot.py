@@ -17,7 +17,7 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 # Discord 클라이언트 설정
 intents = discord.Intents.all()
-client = discord.Client(command_prefix='!', intents=intents)
+client = discord.Client(intents=intents)
 
 # 로그 파일 설정
 log_file = "bot_logs.txt"
