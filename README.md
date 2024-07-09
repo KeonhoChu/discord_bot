@@ -189,4 +189,4 @@ This project is licensed under the GNU License. See the [LICENSE](LICENSE) file 
 ### ライセンス
 
 このプロジェクトはGNUライセンスの下でライセンスされています。詳細については、[LICENSE](LICENSE)ファイルを参照してください。
-```
+
