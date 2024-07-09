@@ -1,5 +1,3 @@
 # discord_bot
 
-pip install openai discord.py[voice] gTTS
-pip install discord openai python-dotenv 
-
+pip install discord.py python-dotenv openai gTTS
