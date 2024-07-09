@@ -26,7 +26,22 @@ log_file = "bot_logs.txt"
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 async def log_and_send(message, response, admin):
-    # (이전 코드와 동일)
+    log_entry = f"[{datetime.datetime.now()}]\n"
+    log_entry += f"사용자: {message.author.name} (ID: {message.author.id})\n"
+    
+    if isinstance(message.channel, discord.TextChannel):
+        log_entry += f"채널: {message.channel.name} (ID: {message.channel.id})\n"
+        log_entry += f"서버: {message.guild.name} (ID: {message.guild.id})\n"
+    else:
+        log_entry += f"채널: 개인 메시지 (ID: {message.channel.id})\n"
+    
+    log_entry += f"입력: {message.content}\n"
+    log_entry += f"출력: {response}\n\n"
+    
+    with open(log_file, "a", encoding="utf-8") as file:
+        file.write(log_entry)
+    
+    await admin.send(f"새로운 대화 로그:\n```\n{log_entry}```")
 
 async def generate_image(prompt):
     try:
@@ -73,7 +88,28 @@ async def on_message(message):
 
     # 음성 메시지 명령어
     if message.content.startswith('!말해'):
-        # (이전 코드와 동일)
+        if message.author.voice is None:
+            await message.channel.send("음성 채널에 먼저 입장해주세요.")
+            return
+
+        text = message.content[4:].strip()
+        filename = f"tts_{message.id}.mp3"
+        await text_to_speech(text, filename)
+
+        voice_channel = message.author.voice.channel
+        voice_client = await voice_channel.connect()
+        
+        def after_playing(error):
+            coro = voice_client.disconnect()
+            fut = asyncio.run_coroutine_threadsafe(coro, client.loop)
+            try:
+                fut.result()
+            except:
+                pass
+            os.remove(filename)
+
+        voice_client.play(FFmpegPCMAudio(filename), after=after_playing)
+        return
 
     # 일반 채팅 처리
     messages = [{"role": "user", "content": message.content}]
