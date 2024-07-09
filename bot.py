@@ -3,7 +3,7 @@ import discord
 from dotenv import load_dotenv
 from chatgpt import send_to_chatGpt
 import datetime
-import openai
+from openai import OpenAI
 from discord import FFmpegPCMAudio
 from gtts import gTTS
 import asyncio
@@ -22,34 +22,25 @@ client = discord.Client(intents=intents)
 # 로그 파일 설정
 log_file = "bot_logs.txt"
 
-# OpenAI API 키 설정
-openai.api_key = OPENAI_API_KEY
+# OpenAI 클라이언트 설정
+openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 async def log_and_send(message, response, admin):
-    log_entry = f"[{datetime.datetime.now()}]\n"
-    log_entry += f"사용자: {message.author.name} (ID: {message.author.id})\n"
-    
-    if isinstance(message.channel, discord.TextChannel):
-        log_entry += f"채널: {message.channel.name} (ID: {message.channel.id})\n"
-        log_entry += f"서버: {message.guild.name} (ID: {message.guild.id})\n"
-    else:
-        log_entry += f"채널: 개인 메시지 (ID: {message.channel.id})\n"
-    
-    log_entry += f"입력: {message.content}\n"
-    log_entry += f"출력: {response}\n\n"
-    
-    with open(log_file, "a", encoding="utf-8") as file:
-        file.write(log_entry)
-    
-    await admin.send(f"새로운 대화 로그:\n```\n{log_entry}```")
+    # (이전 코드와 동일)
 
 async def generate_image(prompt):
-    response = openai.Image.create(
-        prompt=prompt,
-        n=1,
-        size="1024x1024"
-    )
-    return response['data'][0]['url']
+    try:
+        response = openai_client.images.generate(
+            model="dall-e-3",
+            prompt=prompt,
+            size="1024x1024",
+            quality="standard",
+            n=1,
+        )
+        return response.data[0].url
+    except Exception as e:
+        print(f"Image generation error: {str(e)}")
+        return None
 
 async def text_to_speech(text, filename):
     tts = gTTS(text=text, lang='ko')
@@ -73,37 +64,16 @@ async def on_message(message):
     # 이미지 생성 명령어
     if message.content.startswith('!그림'):
         prompt = message.content[4:].strip()
-        try:
-            image_url = await generate_image(prompt)
+        image_url = await generate_image(prompt)
+        if image_url:
             await message.channel.send(image_url)
-        except Exception as e:
-            await message.channel.send(f"이미지 생성 중 오류가 발생했습니다: {str(e)}")
+        else:
+            await message.channel.send("이미지 생성 중 오류가 발생했습니다.")
         return
 
     # 음성 메시지 명령어
     if message.content.startswith('!말해'):
-        if message.author.voice is None:
-            await message.channel.send("음성 채널에 먼저 입장해주세요.")
-            return
-
-        text = message.content[4:].strip()
-        filename = f"tts_{message.id}.mp3"
-        await text_to_speech(text, filename)
-
-        voice_channel = message.author.voice.channel
-        voice_client = await voice_channel.connect()
-        
-        def after_playing(error):
-            coro = voice_client.disconnect()
-            fut = asyncio.run_coroutine_threadsafe(coro, client.loop)
-            try:
-                fut.result()
-            except:
-                pass
-            os.remove(filename)
-
-        voice_client.play(FFmpegPCMAudio(filename), after=after_playing)
-        return
+        # (이전 코드와 동일)
 
     # 일반 채팅 처리
     messages = [{"role": "user", "content": message.content}]
