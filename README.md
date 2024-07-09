@@ -3,7 +3,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
 [![Discord.py](https://img.shields.io/badge/Discord.py-1.7.3-blue)](https://github.com/Rapptz/discord.py)
-[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--3.5-brightgreen)](https://openai.com/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-brightgreen)](https://openai.com/)
 [![gTTS](https://img.shields.io/badge/gTTS-2.2.3-green)](https://pypi.org/project/gTTS/)
 [![GNU GPLv3](https://img.shields.io/badge/license-GNU%20GPLv3-blue)](https://www.gnu.org/licenses/gpl-3.0)
 
