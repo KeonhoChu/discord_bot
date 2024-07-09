@@ -30,7 +30,7 @@ OPENAI_API_KEY=your_openai_api_key
 
 1. 봇을 실행합니다:
 python bot.py
-Copy
+
 2. Discord 서버에서 다음 명령어를 사용할 수 있습니다:
 - 일반 채팅: 봇에게 직접 메시지를 보냅니다.
 - 이미지 생성: `!그림 [설명]`
