@@ -25,7 +25,6 @@ DISCORD_TOKEN=your_discord_bot_token
 ADMIN_ID=your_discord_user_id
 OPENAI_API_KEY=your_openai_api_key
 
-5. `chatgpt.py` 파일을 생성하고 `send_to_chatGpt` 함수를 구현합니다.
 
 ## 사용 방법
 
