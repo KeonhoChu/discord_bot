@@ -13,7 +13,7 @@ OPENAI_KEY = os.getenv('OPENAI_KEY')
 client = OpenAI(api_key=OPENAI_KEY)
 
 
-def send_to_chatGpt(messages, model="gpt-4"):
+def send_to_chatGpt(messages, model="gpt-4o"):
     response = client.chat.completions.create(
         model=model,
         messages=messages,
